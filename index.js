@@ -1,6 +1,10 @@
+#!/usr/bin/env node
+
+import WebSocket from 'ws';
+import rotatingLog from 'rotating-log';
+
 const KB_FACTOR = 1024;
 const MB_FACTOR = 1024 * KB_FACTOR;
-const GB_FACTOR = 1024 * MB_FACTOR;
 
 const maxSize = Number(MB_FACTOR);
 
@@ -8,11 +12,9 @@ const keep = 2;
 let rotations = 0;
 let count = 0;
 
-const RotatingLog = require('rotating-log');
-
 const logfile = 'logs/logs.log';
 
-const log = RotatingLog(logfile, {keep, maxsize: Math.round(maxSize)});
+const log = rotatingLog(logfile, {keep, maxsize: Math.round(maxSize)});
 
 function checkRotations() {
 	if (rotations >= keep) {
@@ -27,26 +29,23 @@ log.on('rotated', () => {
 	checkRotations();
 });
 
-log.on('error', err => {
-	console.error('There was an error: %s', err.message || err);
+log.on('error', error => {
+	console.error('There was an error: %s', error.message || error);
 });
-// Log.write( 'data' )
 
 console.log('Logging to', logfile, 'max size =', maxSize);
 console.log('execute "tail -f %s" to watch log. press ctrl-c to exit.', logfile);
 console.log('Starting:', new Date());
 
-const WebSocket = require('ws');
-
-var ws = new WebSocket('wss://ws-sandbox.kraken.com');
+const ws = new WebSocket('wss://ws-sandbox.kraken.com');
 ws.on('open', () => {
 	console.log('Open');
 	const subData = {
 		event: 'subscribe',
 		pair: [
-		'BTC/USD',
-		'ETH/USD',
-		'LTC/USD'
+			'BTC/USD',
+			'ETH/USD',
+			'LTC/USD'
 		],
 		subscription: {
 			name: 'ticker'
@@ -76,7 +75,7 @@ ws.on('message', rawMessage => {
 			// Log.write(data);
 		}
 	} catch (error) {
-
+		console.log('Error processing WebSocket message:', error);
 	}
 });
 

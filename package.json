@@ -5,11 +5,11 @@
   "type": "module",
   "dependencies": {
     "rotating-log": "^0.1.1",
-    "ws": "^7.3.1"
+    "ws": "^8.8.1"
   },
   "devDependencies": {
     "@umaar/personal-eslint-config": "latest",
-    "xo": "^0.32.1"
+    "xo": "^0.51.0"
   },
   "xo": {
     "extends": "./node_modules/@umaar/personal-eslint-config/rules.json"
